@@ -1,4 +1,4 @@
-﻿using Ehealthcare.Entities.Dto;
+using Ehealthcare.Entities.Dto;
 using EHealthcare.Entities;
 using Microsoft.IdentityModel.Tokens;
 using ProjectManagement.Data;
@@ -61,6 +61,7 @@ namespace Ehealthcare.Api
                     model.AccessToken = tokenHandler.WriteToken(token);
                     model.FirstName = user.FirstName;
                     model.LastName = user.LastName;
+                    model.ID = user.ID;
                     model.IsAdmin = user.IsAdmin;
                 }
             }).ConfigureAwait(true);
