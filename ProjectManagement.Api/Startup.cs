@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
 
 namespace ProjectManagement.Api
 {
@@ -36,6 +37,7 @@ namespace ProjectManagement.Api
             DependencyResolver.Init(this.RegisterDependencies(services).BuildServiceProvider());
             services.AddCors();
             var key = Encoding.ASCII.GetBytes("this is a secret for the demo purpose, please change in produ.");
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -53,7 +55,21 @@ namespace ProjectManagement.Api
                     ValidateAudience = false
                 };
             });
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(
+                opt =>
+                {
+
+                    opt.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                    {
+                        Description = "JWT Auth header using Bearer",
+                        Name = "Authorization",
+                        In = ParameterLocation.Header,
+                        Type = SecuritySchemeType.ApiKey,
+                        Scheme = "Bearer"
+                    });
+                    //    opt.AddSecurityRequirement(new OpenApiSecurityRequirement 
+
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,6 +96,7 @@ namespace ProjectManagement.Api
                 endpoints.MapControllers();
             });
             app.UseSwagger();
+
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1"); });
         }
 
